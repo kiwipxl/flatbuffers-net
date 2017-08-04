@@ -62,6 +62,11 @@ namespace FlatBuffers
 
         private object DeserializeStruct(int structBase, int offset, TypeModel typeModel, bool isRoot = false)
         {
+            return DeserializeStruct(null, structBase, offset, typeModel, isRoot);
+        }
+
+        private object DeserializeStruct(object instance, int structBase, int offset, TypeModel typeModel, bool isRoot = false)
+        {
             var structDef = typeModel.StructDef;
             var fieldOffset = structBase;
 
@@ -83,18 +88,26 @@ namespace FlatBuffers
                 fieldOffset += offset;
             }
 
-            return DeserializeStruct(fieldOffset, typeModel);
+            return DeserializeStruct(instance, fieldOffset, typeModel);
         }
 
         private object DeserializeStruct(int pos, TypeModel typeModel)
         {
+            return DeserializeStruct(null, pos, typeModel);
+        }
+
+        private object DeserializeStruct(object instance, int pos, TypeModel typeModel)
+        {
             var structDef = typeModel.StructDef;
-            var obj = Activator.CreateInstance(typeModel.Type);
+            if (instance == null) {
+                instance = Activator.CreateInstance(typeModel.Type);
+            }
+
             foreach (var field in structDef.Fields)
             {
-                DeserializeStructField(obj, structDef, field, pos);
+                DeserializeStructField(instance, structDef, field, pos);
             }
-            return obj;
+            return instance;
         }
 
         private string DeserializeString(int structBase, int offset)
@@ -429,7 +442,17 @@ namespace FlatBuffers
             return vtableOffset < _buffer.GetShort(vtable) ? (int)_buffer.GetShort(vtable + vtableOffset) : 0;
         }
 
+        public object DeserializeInto(object instance)
+        {
+            return Deserialize(instance);
+        }
+
         public object Deserialize()
+        {
+            return Deserialize(null);
+        }
+
+        private object Deserialize(object instance)
         {
             // TODO: Support more root types than struct?
             if (_rootTypeModel.BaseType != BaseType.Struct)
@@ -437,7 +460,7 @@ namespace FlatBuffers
                 throw new ArgumentException();
             }
 
-            return DeserializeStruct(_buffer.Position, _buffer.Position, _rootTypeModel, true);
+            return DeserializeStruct(instance, _buffer.Position, _buffer.Position, _rootTypeModel, true);
         }
 
     }

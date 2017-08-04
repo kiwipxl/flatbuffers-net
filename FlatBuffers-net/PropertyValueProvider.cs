@@ -14,7 +14,7 @@ namespace FlatBuffers
 
         public object GetValue(object obj)
         {
-            return _prop.GetValue(obj, BindingFlags.Public | BindingFlags.Instance, null, null, null);
+            return _prop.GetValue(obj, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, null, null);
         }
 
         public void SetValue(object obj, object value)

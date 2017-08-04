@@ -37,6 +37,11 @@ namespace FlatBuffers
             return (T)Deserialize(typeof(T), buffer, offset, count);
         }
 
+        public T DeserializeInto<T>(object instance, byte[] buffer, int offset, int count)
+        {
+            return (T)Deserialize(typeof(T), instance, buffer, offset, count);
+        }
+
         /// <summary>
         /// Deserializes an object from a byte array containing data FlatBuffers format
         /// </summary>
@@ -47,10 +52,15 @@ namespace FlatBuffers
         /// <returns>The deserialized object</returns>
         public object Deserialize(Type type, byte[] buffer, int offset, int count)
         {
+            return Deserialize(type, null, buffer, offset, count);
+        }
+
+        private object Deserialize(Type type, object instance, byte[] buffer, int offset, int count)
+        {
             var bufferPos = offset;
             var bb = new ByteBuffer(buffer, bufferPos);
             var context = new DeserializationContext(_typeModelRegistry, type, bb);
-            return context.Deserialize();
+            return context.DeserializeInto(instance);
         }
 
         /// <summary>
@@ -81,6 +91,11 @@ namespace FlatBuffers
             var context = new SerializationContext(_typeModelRegistry, obj, builder);
             context.Serialize();
             return builder.SizedByteArray();
+        }
+
+        public int Serialize(FlatBufferBuilder builder, object obj) {
+            var context = new SerializationContext(_typeModelRegistry, obj, builder);
+            return context.Serialize();
         }
     }
 }

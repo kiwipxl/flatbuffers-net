@@ -130,7 +130,7 @@ namespace FlatBuffers
         {
             var unionTypeDef = new UnionTypeDefinition() { Name = type.Name };
 
-            var members = type.GetMembers(BindingFlags.Public|BindingFlags.Static).Where(i=>i.MemberType == MemberTypes.Field).ToArray();
+            var members = type.GetMembers(BindingFlags.Public|BindingFlags.Static|BindingFlags.DeclaredOnly).Where(i=>i.MemberType == MemberTypes.Field).ToArray();
             for (var i = 0; i < members.Length; ++i)
             {
                 var member = members[i];
@@ -196,7 +196,7 @@ namespace FlatBuffers
         private StructTypeDefinition ReflectStructDef(Type type)
         {
             var members =
-               type.GetMembers(BindingFlags.Public | BindingFlags.Instance)
+               type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                    .Where(i => i.MemberType == MemberTypes.Field || i.MemberType == MemberTypes.Property)
                    .Where(i=>!i.Defined<FlatBuffersIgnoreAttribute>())
                    .ToArray();

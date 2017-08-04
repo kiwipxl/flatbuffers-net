@@ -438,21 +438,21 @@ namespace FlatBuffers
                 SerializeReferenceTypeFields(_rootObject, _rootTypeModel);
             }
 
-            var rootTable = SerializeStruct(_rootObject, _rootTypeModel);
+            return SerializeStruct(_rootObject, _rootTypeModel);
 
-            if (_rootTypeModel.IsTable)
-            {
-                if (_rootTypeModel.StructDef.HasIdentifier)
-                {
-                    _builder.Finish(rootTable, _rootTypeModel.StructDef.Identifier);
-                }
-                else
-                {
-                    _builder.Finish(rootTable);
-                }
+            //if (_rootTypeModel.IsTable)
+            //{
+            //    if (_rootTypeModel.StructDef.HasIdentifier)
+            //    {
+            //        _builder.Finish(rootTable, _rootTypeModel.StructDef.Identifier);
+            //    }
+            //    else
+            //    {
+            //        _builder.Finish(rootTable);
+            //    }
                 
-            }
-            return _builder.Offset;
+            //}
+            //return _builder.Offset;
         }
     }
 }

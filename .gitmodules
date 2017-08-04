@@ -1,4 +1,4 @@
 [submodule "flatbuffers"]
-	path = .flatbuffers
+	path = flatbuffers
 	url = https://github.com/google/flatbuffers.git
 	branch = master
